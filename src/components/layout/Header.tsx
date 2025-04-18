@@ -1,21 +1,19 @@
-
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
   User,
   Bell,
-  Upload,
-  FolderPlus
 } from 'lucide-react';
 import { SECTIONS } from '@/utils/fileSections';
 import { AdvancedSearch } from '../search/AdvancedSearch';
+import { NewFolderDialog } from '../dialogs/NewFolderDialog';
+import { UploadDialog } from '../dialogs/UploadDialog';
 
 export const Header = () => {
   const location = useLocation();
   const pathname = location.pathname;
   
-  // Get current section name
   const getSectionName = () => {
     if (pathname === '/') return 'All Files';
     if (pathname === '/recent') return 'Recent Files';
@@ -48,14 +46,8 @@ export const Header = () => {
       </div>
       
       <div className="flex items-center gap-2 order-2 md:order-3">
-        <Button variant="outline" size="sm" className="flex gap-2">
-          <Upload size={16} />
-          <span>Upload</span>
-        </Button>
-        <Button variant="outline" size="sm" className="flex gap-2">
-          <FolderPlus size={16} />
-          <span>New Folder</span>
-        </Button>
+        <UploadDialog />
+        <NewFolderDialog />
         <Button variant="ghost" size="icon">
           <Bell size={18} />
         </Button>
