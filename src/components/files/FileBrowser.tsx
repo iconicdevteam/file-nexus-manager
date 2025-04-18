@@ -23,6 +23,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [filterService, setFilterService] = useState<StorageService | null>(null);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
+  const [currentFolderId, setCurrentFolderId] = useState<string | undefined>(undefined);
   const location = useLocation();
 
   const getCurrentSection = (): FileSection | null => {
@@ -46,8 +47,8 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
     if (filterService && file.source !== filterService) {
       return false;
     }
-    
-    return true;
+
+    return file.parentId === currentFolderId;
   });
   
   const sortedFiles = [...filteredFiles].sort((a, b) => {
@@ -87,14 +88,18 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
   };
 
   const handleFileSelect = (file: FileItem) => {
-    setSelectedFile(file);
+    if (file.isFolder) {
+      setCurrentFolderId(file.id);
+      setSelectedFile(null);
+    } else {
+      setSelectedFile(file);
+    }
   };
 
-  const getCurrentFolderId = () => {
-    if (selectedFile && selectedFile.isFolder) {
-      return selectedFile.id;
-    }
-    return undefined;
+  const handleNavigateUp = () => {
+    const currentFolder = MOCK_FILES.find(f => f.id === currentFolderId);
+    setCurrentFolderId(currentFolder?.parentId);
+    setSelectedFile(null);
   };
 
   return (
@@ -108,8 +113,19 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
       <div className={`transition-all duration-300 ${selectedFile ? 'mr-80' : ''}`}>
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">
+            {currentFolderId && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNavigateUp}
+                className="mr-2"
+              >
+                <FolderUp size={16} className="mr-2" />
+                Back
+              </Button>
+            )}
             <FileToolbar 
-              parentFolderId={getCurrentFolderId()} 
+              parentFolderId={currentFolderId} 
               onSelectAll={() => {}} 
             />
             <FileSortMenu

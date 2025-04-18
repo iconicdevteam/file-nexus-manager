@@ -9,10 +9,7 @@ interface FileGridProps {
 }
 
 export const FileGrid: React.FC<FileGridProps> = ({ files, onFileSelect }) => {
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
   const handleFileSelect = (file: FileItem) => {
-    setSelectedFile(file.id);
     if (onFileSelect) {
       onFileSelect(file);
     }
@@ -25,7 +22,7 @@ export const FileGrid: React.FC<FileGridProps> = ({ files, onFileSelect }) => {
           key={file.id} 
           file={file} 
           onSelect={handleFileSelect}
-          selected={selectedFile === file.id}
+          selected={false}
         />
       ))}
     </div>
