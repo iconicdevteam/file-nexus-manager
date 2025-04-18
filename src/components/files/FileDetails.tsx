@@ -17,7 +17,7 @@ import {
   Trash2,
   Edit,
   Copy,
-  FileIcon,
+  File as FileIcon,
   Image,
   Table,
   File,
@@ -90,7 +90,8 @@ export const FileDetails: React.FC<FileDetailsProps> = ({ file, onClose }) => {
     }
   };
   
-  const FileIconComponent = getFileIcon();
+  // Get the icon component before using it
+  const IconComponent = getFileIcon();
   const section = getSection();
 
   return (
@@ -109,7 +110,7 @@ export const FileDetails: React.FC<FileDetailsProps> = ({ file, onClose }) => {
           />
         ) : (
           <div className="w-32 h-32 flex items-center justify-center mb-3">
-            <FileIconComponent className={`h-16 w-16 text-${file.section}`} />
+            <IconComponent className={`h-16 w-16 text-${file.section}`} />
           </div>
         )}
         

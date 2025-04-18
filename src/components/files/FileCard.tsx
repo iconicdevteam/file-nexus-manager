@@ -7,7 +7,7 @@ import {
   MoreHorizontal,
   FileText,
   Image,
-  FileIcon,
+  File as FileIcon,
   Table,
   File,
   Folder,
@@ -28,6 +28,9 @@ interface FileCardProps {
 }
 
 export const FileCard: React.FC<FileCardProps> = ({ file, onSelect, selected = false }) => {
+  // Initialize icon component variable
+  let IconComponent;
+  
   const getFileIcon = () => {
     if (file.isFolder) return Folder;
     
@@ -68,7 +71,8 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onSelect, selected = f
     return <Cloud size={14} className="text-muted-foreground" />;
   };
 
-  const FileIcon = getFileIcon();
+  // Get the icon component before using it
+  IconComponent = getFileIcon();
 
   // Convert fileSection to className string
   const getSectionColor = () => {
@@ -98,7 +102,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onSelect, selected = f
             className="max-h-full max-w-full object-contain"
           />
         ) : (
-          <FileIcon className={cn("h-10 w-10", getSectionColor())} />
+          <IconComponent className={cn("h-10 w-10", getSectionColor())} />
         )}
       </div>
       
