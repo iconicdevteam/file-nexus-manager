@@ -99,3 +99,63 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animation for file cards */
+@keyframes file-hover {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.file-card-hover:hover {
+  animation: file-hover 0.3s ease;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Drag and drop styles */
+.dragging {
+  opacity: 0.6;
+  cursor: grabbing;
+}
+
+.drop-target {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 2px dashed rgba(59, 130, 246, 0.5);
+  border-radius: 0.5rem;
+}
+
+/* Status indicators */
+.status-synced {
+  @apply text-status-synced;
+}
+
+.status-syncing {
+  @apply text-status-syncing;
+  animation: pulse 2s infinite;
+}
+
+.status-error {
+  @apply text-status-error;
+}
+
+.status-offline {
+  @apply text-status-offline;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

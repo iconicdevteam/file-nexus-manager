@@ -61,7 +61,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+        // Section-specific colors
+        residential: {
+          DEFAULT: '#4A6FFF',
+          light: '#E5E9FF',
+          dark: '#3A5FEF'
+        },
+        commercial: {
+          DEFAULT: '#6B4AFF',
+          light: '#EBE5FF',
+          dark: '#5A3AEF'
+        },
+        marketing: {
+          DEFAULT: '#FF4A8D',
+          light: '#FFE5F0',
+          dark: '#EF3A7D'
+        },
+        realestate: {
+          DEFAULT: '#4AC6FF',
+          light: '#E5F5FF',
+          dark: '#3AB6EF'
+        },
+        // Status colors
+        status: {
+          synced: '#10B981',
+          syncing: '#F59E0B',
+          error: '#EF4444',
+          offline: '#9CA3AF'
+        }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
