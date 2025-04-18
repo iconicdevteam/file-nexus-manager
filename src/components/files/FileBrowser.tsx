@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FileGrid } from './FileGrid';
 import { FileDetails } from './FileDetails';
@@ -21,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { SECTIONS } from '@/utils/fileSections';
+import { UploadDialog, NewFolderDialog } from '@/components/dialogs';
 
 interface FileBrowserProps {
   initialSection?: FileSection;
@@ -34,7 +34,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const location = useLocation();
   
-  // Determine current section based on route
   const getCurrentSection = (): FileSection | null => {
     if (location.pathname.startsWith('/section/')) {
       const sectionId = location.pathname.split('/')[2];
@@ -48,14 +47,11 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
 
   const currentSection = getCurrentSection();
   
-  // Filter files based on section and service
   const filteredFiles = MOCK_FILES.filter(file => {
-    // Filter by section if specified
     if (currentSection && file.section !== currentSection) {
       return false;
     }
     
-    // Filter by service if specified
     if (filterService && file.source !== filterService) {
       return false;
     }
@@ -63,7 +59,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
     return true;
   });
   
-  // Sort files
   const sortedFiles = [...filteredFiles].sort((a, b) => {
     let comparison = 0;
     
@@ -87,7 +82,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
     return sortDirection === 'asc' ? comparison : -comparison;
   });
   
-  // Group files by folders and regular files
   const folders = sortedFiles.filter(file => file.isFolder);
   const files = sortedFiles.filter(file => !file.isFolder);
   
@@ -106,9 +100,15 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
     setSelectedFile(file);
   };
 
+  const getCurrentFolderId = () => {
+    if (selectedFile && selectedFile.isFolder) {
+      return selectedFile.id;
+    }
+    return undefined;
+  };
+
   return (
     <div className="space-y-4">
-      {/* File Details Sidebar */}
       {selectedFile && (
         <div className="fixed inset-y-0 right-0 w-80 bg-background border-l border-border z-10 overflow-auto">
           <FileDetails file={selectedFile} onClose={() => setSelectedFile(null)} />
@@ -116,9 +116,10 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
       )}
 
       <div className={`transition-all duration-300 ${selectedFile ? 'mr-80' : ''}`}>
-        {/* Toolbar */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">
+            <UploadDialog parentFolderId={getCurrentFolderId()} />
+            <NewFolderDialog parentFolderId={getCurrentFolderId()} />
             <Button variant="outline" size="sm" disabled>
               <Grid3X3 size={16} className="mr-2" />
               Select All
@@ -202,7 +203,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
           </div>
         </div>
 
-        {/* Files */}
         <div>
           <Tabs defaultValue="all" className="w-full">
             <TabsList>
