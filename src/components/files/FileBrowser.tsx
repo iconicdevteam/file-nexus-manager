@@ -4,23 +4,12 @@ import { FileDetails } from './FileDetails';
 import { FileItem, FileSection, StorageService } from '@/types/files';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MOCK_FILES } from '@/utils/mockData';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { 
-  Grid3X3, 
-  List, 
-  SortAsc, 
-  FileUp,
-  FolderUp,
-  Trash2,
-  FilterX,
-  Filter,
-  X
-} from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { SECTIONS } from '@/utils/fileSections';
-import { UploadDialog, NewFolderDialog } from '@/components/dialogs';
+import { FileToolbar } from './FileToolbar';
+import { FileViewToggle } from './FileViewToggle';
+import { FileSortMenu } from './FileSortMenu';
+import { FileFilterMenu } from './FileFilterMenu';
 
 interface FileBrowserProps {
   initialSection?: FileSection;
@@ -33,7 +22,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
   const [filterService, setFilterService] = useState<StorageService | null>(null);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const location = useLocation();
-  
+
   const getCurrentSection = (): FileSection | null => {
     if (location.pathname.startsWith('/section/')) {
       const sectionId = location.pathname.split('/')[2];
@@ -84,7 +73,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
   
   const folders = sortedFiles.filter(file => file.isFolder);
   const files = sortedFiles.filter(file => !file.isFolder);
-  
   const allFiles = [...folders, ...files];
 
   const handleSort = (field: string) => {
@@ -118,89 +106,27 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({ initialSection }) => {
       <div className={`transition-all duration-300 ${selectedFile ? 'mr-80' : ''}`}>
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">
-            <UploadDialog parentFolderId={getCurrentFolderId()} />
-            <NewFolderDialog parentFolderId={getCurrentFolderId()} />
-            <Button variant="outline" size="sm" disabled>
-              <Grid3X3 size={16} className="mr-2" />
-              Select All
-            </Button>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <SortAsc size={16} className="mr-2" />
-                  Sort
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => handleSort('name')}>
-                  Name {sortBy === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSort('date')}>
-                  Date {sortBy === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSort('size')}>
-                  Size {sortBy === 'size' && (sortDirection === 'asc' ? '↑' : '↓')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSort('type')}>
-                  Type {sortBy === 'type' && (sortDirection === 'asc' ? '↑' : '↓')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Filter size={16} className="mr-2" />
-                  Filter
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setFilterService('dropbox')}>
-                  Dropbox {filterService === 'dropbox' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterService('google-drive')}>
-                  Google Drive {filterService === 'google-drive' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterService('onedrive')}>
-                  OneDrive {filterService === 'onedrive' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterService('local')}>
-                  Local Storage {filterService === 'local' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterService(null)}>
-                  <FilterX size={16} className="mr-2" />
-                  Clear Filters
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <FileToolbar 
+              parentFolderId={getCurrentFolderId()} 
+              onSelectAll={() => {}} 
+            />
+            <FileSortMenu
+              sortBy={sortBy}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            />
+            <FileFilterMenu
+              filterService={filterService}
+              onFilterChange={setFilterService}
+            />
           </div>
           
-          <div className="flex space-x-2">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid3X3 size={16} />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setViewMode('list')}
-            >
-              <List size={16} />
-            </Button>
-            {selectedFile && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setSelectedFile(null)}
-              >
-                <X size={16} />
-              </Button>
-            )}
-          </div>
+          <FileViewToggle
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            selectedFile={!!selectedFile}
+            onClearSelection={() => setSelectedFile(null)}
+          />
         </div>
 
         <div>
