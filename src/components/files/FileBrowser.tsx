@@ -10,6 +10,8 @@ import { FileToolbar } from './FileToolbar';
 import { FileViewToggle } from './FileViewToggle';
 import { FileSortMenu } from './FileSortMenu';
 import { FileFilterMenu } from './FileFilterMenu';
+import { Button } from "@/components/ui/button";
+import { FolderUp, FileUp } from 'lucide-react';
 
 interface FileBrowserProps {
   initialSection?: FileSection;
